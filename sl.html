@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Vecna SL">
+<title>Vecna – SL-Begleiter</title>
+<style>
+:root{--bg:#f2f0eb;--panel:#fbfaf7;--panel2:#e9e5dc;--line:#cdd5dd;--txt:#1e3745;--mut:#5f707b;--acc:#1e3745;--gold:#a8752a;--red:#b0402f;--grn:#3c8653;--blu:#2c679b;--head:#1e3745}
+*{touch-action:manipulation;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{touch-action:manipulation;margin:0;overflow-x:hidden;max-width:100%;background:var(--bg);color:var(--txt);font:17px/1.45 "Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;background-image:radial-gradient(#0000000a 1px,transparent 1px);background-size:5px 5px}
+button,input,select,textarea{font:inherit;color:inherit}
+button{background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:8px 12px;cursor:pointer}
+button.pri{background:var(--acc);color:#fff;border-color:var(--acc);font-weight:600}
+button.sm{padding:4px 9px;font-size:14px}
+input,select,textarea{background:#fff;border:1px solid var(--line);border-radius:8px;padding:8px}
+header{position:sticky;top:0;z-index:20;background:var(--head);color:#fff;border-bottom:0;box-shadow:0 2px 8px #0003;padding:calc(env(safe-area-inset-top) + 8px) 12px 8px;display:flex;gap:8px;align-items:center}
+header h1{cursor:pointer;font-size:19px;font-weight:500;margin:0;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#fff}
+header button{background:#ffffff1a;border-color:#ffffff40;color:#fff}
+html,body{height:100%;overflow:hidden;overscroll-behavior:none}
+body{display:flex;flex-direction:column;height:100vh;height:100dvh}
+header{flex:none}
+main{flex:1 1 auto;min-height:0;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;overscroll-behavior-y:contain;padding:12px 12px 24px}
+nav{position:relative;flex:none;z-index:30;display:flex;background:var(--head);border-top:0;padding-bottom:max(env(safe-area-inset-bottom),24px)}
+nav button{flex:1;border:0;border-radius:0;background:none;padding:9px 2px 7px;font-size:11px;color:#a9bcc7;display:flex;flex-direction:column;align-items:center;gap:2px}
+nav button .i{font-size:20px;line-height:1}
+nav button.on{color:#fff;font-weight:700;background:#ffffff14}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:12px;margin-bottom:12px}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.mut{color:var(--mut)}
+.read{background:#ece4d3;border-left:4px solid var(--gold);padding:10px 12px;border-radius:8px;font-style:italic;margin:8px 0}
+.md h3{margin:16px 0 6px;color:var(--acc);font-size:19px;border-bottom:1px solid var(--line)}
+.md p{margin:6px 0}.md ul{margin:6px 0;padding-left:20px}
+.md blockquote{margin:8px 0;background:#ece4d3;border-left:4px solid var(--gold);padding:8px 12px;border-radius:8px;font-style:italic}
+.md table{border-collapse:collapse;width:100%;margin:8px 0;font-size:14px;text-align:center}
+.md td,.md th{border:1px solid var(--line);padding:4px}
+.mapsel{display:flex;gap:6px;margin-bottom:8px;overflow-x:auto}
+.mapsel button.on{border-color:var(--acc);color:var(--acc)}
+.mapwrap{position:relative;overflow:auto;border-radius:12px;border:1px solid var(--line);max-height:68vh;max-height:60dvh;background:#000;touch-action:pan-x pan-y}
+.mapin{position:relative;transform-origin:0 0}
+.mapin img{display:block;width:100%;user-select:none;-webkit-user-select:none}
+.mk{position:absolute;transform:translate(-50%,-50%);min-width:26px;height:26px;padding:0 4px;border-radius:13px;background:rgba(232,190,100,.95);color:#1a1408;font-family:-apple-system,sans-serif;font-weight:700;font-size:11px;border:2px solid #fff;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 6px #000a}
+.mk.done{background:rgba(110,110,110,.85);color:#eee}
+.mk.cur{background:var(--red);color:#fff}
+.sheet{position:fixed;left:0;right:0;bottom:0;z-index:50;max-height:86vh;max-height:82dvh;overflow:auto;background:var(--bg);border-top:2px solid var(--acc);border-radius:18px 18px 0 0;padding:14px 14px calc(40px + max(env(safe-area-inset-bottom),24px));box-shadow:0 -10px 30px #0004;animation:up .18s ease-out}
+@keyframes up{from{transform:translateY(40px);opacity:.4}}
+.sheet h2{margin:0 0 4px;font-size:19px}
+.shade{position:fixed;inset:0;background:#1e374580;z-index:45}
+.chip{display:inline-flex;align-items:center;gap:4px;background:var(--panel2);border:1px solid var(--line);border-radius:999px;padding:5px 11px;margin:3px 4px 3px 0;font-size:14px}
+.chip.miss{border-color:var(--red)}
+.list .it{display:flex;justify-content:space-between;align-items:center;padding:10px 4px;border-bottom:1px solid var(--line)}
+.cmb{display:grid;grid-template-columns:44px 1fr auto;gap:8px;align-items:center;padding:8px;border-radius:10px;border:1px solid var(--line);margin-bottom:6px;background:var(--panel)}
+.cmb.turn{border-color:var(--gold);box-shadow:0 0 0 2px #a8752a55;background:#fff8ea}
+.cmb.dead{opacity:.45}
+.cmb{grid-template-columns:52px 1fr auto}
+.who{cursor:pointer;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;padding:4px;border-radius:8px}
+.who.pressing{background:#f2c9c3;transition:background .6s}
+.hpb{min-width:88px;min-height:52px;font-size:22px;font-weight:800;border-radius:12px;background:#e3efe5;border-color:#8fb79a;color:#1e3745}
+.hpb small{font-size:13px;font-weight:400;color:var(--mut)}
+.pg{font-size:12px;font-weight:400;color:var(--mut);border:1px solid var(--line);border-radius:6px;padding:0 5px;margin-left:4px;white-space:nowrap}
+.thp{font-size:13px;color:#2c679b;font-weight:700;line-height:1}
+.act.tmp{background:#dfe9f4;border-color:#8eb0d4}
+.pad{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.pad button{font-size:26px;padding:14px 0;border-radius:12px}
+.act{flex:1;padding:14px 4px;font-size:17px;font-weight:700;border-radius:12px}
+.act.dmg{background:#f4d9d4;border-color:#c98a80}.act.heal{background:#dcefe1;border-color:#8fb79a}
+.cmb .ini{width:44px;text-align:center;padding:6px 2px}
+.hp{font-weight:700}
+.sec{display:grid;grid-template-columns:28px 1fr;gap:8px;padding:9px 0;border-bottom:1px solid var(--line)}
+.sec select{width:100%;margin-top:6px}
+.tag{white-space:nowrap;display:inline-block;font-size:12px;padding:1px 7px;border-radius:999px;border:1px solid var(--line);color:var(--mut)}
+.st-erfahren{color:var(--grn);border-color:var(--grn)}.st-offenbart,.st-verraten{color:var(--blu);border-color:var(--blu)}.st-weg{color:var(--red);border-color:var(--red)}
+#lock{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;padding:24px;background:var(--bg);z-index:99}
+#lock .card{width:100%;max-width:380px}
+.toast{position:fixed;left:50%;bottom:calc(90px + max(env(safe-area-inset-bottom),24px));transform:translateX(-50%);background:var(--acc);color:#fff;padding:10px 16px;border-radius:12px;z-index:200;font-weight:600}
+.search{width:100%;margin-bottom:10px}
+
+.zwrap{position:relative;overflow:auto;border-radius:12px;border:1px solid var(--line);background:#000;margin:8px 0 0;max-height:48vh;max-height:44dvh;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
+.zoomv{position:relative;overflow:hidden;background:#000}
+.zoomv img{position:absolute;max-width:none;user-select:none;-webkit-user-select:none}
+.fm{position:absolute;transform:translate(-50%,-50%);width:28px;height:28px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;border:2px solid #fff;box-shadow:0 2px 6px #000c;color:#111}
+.fm.m{background:#e0524a;color:#fff}.fm.n{background:#5fc27e}.fm.f{background:#f0a23a}.fm.s{background:#f3d34a}.fm.t{background:#5fc3e0}.fm.i{background:#ddd}
+.lnk{color:var(--acc);font-weight:700;text-decoration:underline;text-decoration-style:dotted;text-underline-offset:3px;cursor:pointer;white-space:nowrap}
+.ftlnk{display:inline-block;margin-left:4px;padding:1px 8px;border-radius:10px;background:#5fc3e033;border:1px solid #5fc3e0;color:var(--txt);font-size:13px;font-weight:700;cursor:pointer}
+.mleg{display:flex;flex-wrap:wrap;gap:4px 12px;align-items:center;font:11px/1.3 -apple-system,sans-serif;color:var(--mut);margin:5px 2px 0}
+.mleg i{display:inline-block;width:10px;height:10px;border-radius:5px;margin-right:4px;vertical-align:-1px;border:1px solid #fff;box-shadow:0 0 0 1px #0003}
+.grab{width:42px;height:5px;border-radius:3px;background:#0003;margin:-6px auto 8px}
+.leg{display:grid;grid-template-columns:30px 1fr;gap:6px 8px;align-items:start;margin:6px 0}
+.leg .fm{position:static;transform:none}
+.pm{position:absolute;transform:translate(-50%,-50%);height:26px;padding:0 9px;border-radius:13px;background:#5fc3e0;color:#0b2530;border:2px solid #fff;box-shadow:0 2px 6px #000c;font:800 12px/22px -apple-system,sans-serif;white-space:nowrap;cursor:pointer;z-index:2}
+.pchip{display:inline-block;margin:3px 6px 3px 0;padding:4px 12px;border-radius:14px;background:#5fc3e0;color:#0b2530;font-weight:800;font-size:14px;border:2px solid #fff;box-shadow:0 1px 4px #0005;cursor:pointer}
+.leg .on{background:#ece4d3;border-radius:8px}
+.move{background:#e3ecf3;border-left:4px solid var(--blu);padding:8px 12px;border-radius:8px;margin:8px 0}
+.pic{position:fixed;inset:0;z-index:300;background:#fff;display:flex;align-items:center;justify-content:center}.pic img{max-width:100%;max-height:100%;object-fit:contain}
+.pb{background:#e9e2f3;border-color:#8a74b0}
+.full{position:fixed;inset:0;height:100dvh;z-index:60;background:var(--bg);overflow:auto;-webkit-overflow-scrolling:touch;padding:calc(env(safe-area-inset-top) + 10px) 12px calc(60px + max(env(safe-area-inset-bottom),24px))}
+.grp>summary{font-size:20px;color:var(--acc)}
+.sub{border-top:1px solid var(--line);padding-top:4px}
+.sub>summary{font-weight:600}
+details summary{cursor:pointer;font-weight:600;padding:6px 0}
+
+.sb h2.sbn{text-align:center;font-size:34px;font-weight:500;letter-spacing:.5px;margin:6px 0 8px;color:var(--txt)}
+.sb .ban{background:var(--head);color:#fff;font-style:italic;text-align:center;padding:8px 14px;margin:0 4px 14px;clip-path:polygon(2% 0,98% 4%,100% 50%,98% 100%,3% 96%,0 55%);font-size:18px}
+.sb .kv{margin:7px 0}.sb .kv b{color:var(--txt)}
+.sb hr{border:0;border-top:1.5px solid var(--line);margin:14px 0}
+.sb .ab{display:grid;grid-template-columns:repeat(6,1fr);background:#fafbfc;border-radius:8px;padding:8px 2px;text-align:center}
+.sb .ab .l{font-weight:700;color:var(--mut);font-size:15px}.sb .ab .m{font-size:21px;font-weight:600}.sb .ab .s{font-size:13px;color:var(--mut)}
+.sb h3{font-size:24px;margin:10px 0 6px;color:var(--txt)}
+.sb .tr{margin:0 0 14px}.sb .tr .n{font-weight:700;display:block}
+.sb .note{background:#fff3d6;border-left:4px solid var(--gold);padding:8px 12px;border-radius:8px;margin:8px 0 12px;font-size:15px}
+.sb ul{margin:4px 0 10px;padding-left:20px}
+
+.mod{background:#fde7ef;border:2px solid #c2185b;border-left:8px solid #c2185b;border-radius:10px;padding:8px 12px;margin:10px 0;box-shadow:0 2px 6px #c2185b33}
+.mod .modh{font-family:-apple-system,sans-serif;font-size:12px;font-weight:800;letter-spacing:.6px;color:#fff;background:#c2185b;display:inline-block;padding:2px 8px;border-radius:6px;margin-bottom:4px}
+.mod p{margin:5px 0}
+.modb{display:inline-block;background:#c2185b;color:#fff;border-radius:6px;font-size:12px;padding:0 4px;margin-left:4px;line-height:1.5}
+.mk.hasmod{box-shadow:0 0 0 3px #c2185b,0 2px 6px #000a}
+
+.kq{background:var(--head);color:#fff;border-radius:12px 12px 2px 12px;padding:8px 12px;margin:10px 0 6px auto;max-width:88%;width:fit-content;font-size:15px}
+.ka{background:#fff;border:1px solid var(--line);border-radius:12px 12px 12px 2px;padding:6px 12px;margin:6px 0}
+#kout:empty{display:none}
+
+.swrap{position:relative;margin-bottom:6px;border-radius:10px;overflow:hidden}
+.swrap .cmb{margin:0;position:relative;z-index:1;transition:transform .2s ease;touch-action:pan-y}
+.swdel{position:absolute;right:0;top:0;bottom:0;width:110px;border:0;border-radius:10px;background:var(--red);color:#fff;font-weight:700;font-size:16px}
+.dlgbg{position:fixed;inset:0;z-index:400;background:#1e374580;display:flex;align-items:center;justify-content:center;padding:20px}
+.dlg{background:var(--bg);border-radius:14px;padding:18px;width:100%;max-width:400px;box-shadow:0 10px 30px #0005}
+button.danger{background:var(--red);color:#fff;border-color:var(--red);font-weight:600}
+button:disabled{opacity:.45}
+body.emb nav{display:none!important}
+body.emb main{padding-bottom:28px}
+</style>
+</head>
+<body>
+<div id="lock"><div class="card">
+<h2 style="margin-top:0;color:var(--txt)">Vecna – SL-Begleiter</h2>
+<p class="mut">Inhalt ist verschlüsselt. Passwort eingeben:</p>
+<input id="pw" type="password" autocomplete="current-password" style="width:100%;margin-bottom:10px" placeholder="Passwort">
+<label class="row mut" style="margin-bottom:12px"><input id="rem" type="checkbox" checked> auf diesem Gerät merken</label>
+<button class="pri" id="unlock" style="width:100%">Öffnen</button>
+<p id="err" style="color:var(--red)"></p>
+<p id="stinfo" class="mut" style="font-size:.8em;margin:0"></p>
+</div></div>
+
+<header><h1 id="ttl">Vecna</h1><button class="sm" id="ctx" title="Kontext für Claude kopieren">📋 Kontext</button></header>
+<main id="main"></main>
+<nav id="nav"></nav>
+<div id="ov"></div>
+
+<script id="payload" type="application/json">{"salt": "t4pC3m04SPoMcgg+HfOT0A==", "iv": "fIX8wOn1YXKvk2+q", "iter": 250000, "v": "76752f2774", "ext": ["sl1.bin", "sl2.bin", "sl3.bin", "sl4.bin", "sl5.bin", "sl6.bin"]}</script>
+<script>
+"use strict";
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const EMB=!!window.VECNA_EMB;if(EMB)document.body.classList.add("emb");
+const EQ=[];function eNach(m){if(!S){EQ.push(m);return}
+  if(m.typ==="tab"){const ok=["kapitel","kampf","notiz","ki","karte"];if(ok.includes(m.tab)){S.tab=m.tab;save();closeOv&&closeOv();render();$("#main").scrollTop=0}}
+  else if(m.typ==="area"){if(m.kap&&D.chapters.some(c=>c.id===m.kap)&&S.chapter!==m.kap){S.chapter=m.kap;S.map=chap().maps[0].id}
+    let id=m.id;if(!findArea(id)){const k=String(id).replace(/[a-z]+$/,"");if(findArea(k))id=k}
+    if(!findArea(id)){toast(m.id+": kein Eintrag im Buch");return}
+    if(S.tab==="karte")S.tab="kapitel";save();render();openArea(id)}
+  else if(m.typ==="kitext"||m.typ==="kifertig"||m.typ==="kifehler"){const w=KIW[m.id];if(!w)return;
+    if(m.typ==="kitext"){w.t=m.text;w.on&&w.on({text:m.text})}
+    else if(m.typ==="kifertig"){delete KIW[m.id];w.ok({text:m.text})}
+    else{delete KIW[m.id];const e=new Error(m.msg||"Fehler");e.code=m.code;if(m.name)e.name=m.name;if(w.t)e.text=w.t;w.no(e)}}}
+const KIW={};let KIN=0;
+function kiProxy(msgs,o){o=o||{};return new Promise((ok,no)=>{const id=++KIN;KIW[id]={ok,no,on:o.onText,t:""};
+  if(o.signal)o.signal.addEventListener("abort",()=>{parent.postMessage({typ:"kiabbruch",id},"*")});
+  parent.postMessage({typ:"ki",id,msgs},"*")})}
+if(EMB){window.addEventListener("message",e=>{if(e.source!==parent)return;const m=e.data;if(m&&m.typ){if(/^ki/.test(m.typ)&&S)eNach(m);else eNach(m)}});
+  setTimeout(()=>parent.postMessage({typ:"slgeladen"},"*"),0)}
+let D=null, S=null; const SKEY="vecna-sl-state-v1", PKEY="vecna-sl-pw";
+function b64(s){const b=atob(s),u=new Uint8Array(b.length);for(let i=0;i<b.length;i++)u[i]=b.charCodeAt(i);return u}
+async function decrypt(pw){
+  const P=JSON.parse($("#payload").textContent);
+  let CT;
+  if(P.ext){if(!decrypt.buf){const L=Array.isArray(P.ext)?P.ext:[P.ext];const bufs=await Promise.all(L.map(async f=>{const r=await fetch(f+"?v="+P.v);if(!r.ok)throw new Error("nofile");return new Uint8Array(await r.arrayBuffer())}));const n=bufs.reduce((s,x)=>s+x.length,0);const all=new Uint8Array(n);let o=0;for(const x of bufs){all.set(x,o);o+=x.length}if(P.v){const h=[...new Uint8Array(await crypto.subtle.digest("SHA-1",all))].map(x=>x.toString(16).padStart(2,"0")).join("").slice(0,P.v.length);if(h!==P.v)throw new Error("mismatch")}decrypt.buf=all}CT=decrypt.buf}else CT=b64(P.ct);
+  const km=await crypto.subtle.importKey("raw",new TextEncoder().encode(pw),"PBKDF2",false,["deriveKey"]);
+  const key=await crypto.subtle.deriveKey({name:"PBKDF2",salt:b64(P.salt),iterations:P.iter,hash:"SHA-256"},km,{name:"AES-GCM",length:256},false,["decrypt"]);
+  const pt=await crypto.subtle.decrypt({name:"AES-GCM",iv:b64(P.iv)},key,CT);
+  return JSON.parse(new TextDecoder().decode(pt));
+}
+function lsGet(k){try{return localStorage.getItem(k)}catch(e){return null}}
+function lsSet(k,v){try{localStorage.setItem(k,v);return localStorage.getItem(k)===v}catch(e){return false}}
+function lsDel(k){try{localStorage.removeItem(k)}catch(e){}}
+function ckGet(k){try{const m=document.cookie.split("; ").find(x=>x.startsWith(k+"="));return m?decodeURIComponent(m.slice(k.length+1)):null}catch(e){return null}}
+function ckSet(k,v){try{document.cookie=k+"="+encodeURIComponent(v)+"; max-age=31536000; path=/; SameSite=Lax"+(location.protocol==="https:"?"; Secure":"")}catch(e){}}
+function ckDel(k){try{document.cookie=k+"=; max-age=0; path=/"}catch(e){}}
+function pwGet(){return lsGet(PKEY)||ckGet(PKEY)}
+function pwSet(pw){const ok=lsSet(PKEY,pw);ckSet(PKEY,pw);return ok||ckGet(PKEY)===pw}
+function pwDel(){lsDel(PKEY);ckDel(PKEY)}
+(()=>{let ok=false;try{const t="vecna-probe";localStorage.setItem(t,"1");ok=localStorage.getItem(t)==="1";localStorage.removeItem(t)}catch(e){}
+  if(!ok){const i=document.getElementById("stinfo");if(i)i.textContent="⚠️ Dieser Browser erlaubt hier keinen dauerhaften Speicher (privater Modus oder eingebettete Ansicht). Passwort, Notizen und Kampfstand gehen beim Schließen verloren."}
+  try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist()}catch(e){}})();
+async function tryUnlock(pw,remember,auto){
+  $("#err").textContent=auto?"Lade …":"";
+  try{D=await decrypt(pw)}catch(e){
+    if(e&&e.message==="mismatch"){$("#err").textContent="Die Datendateien passen nicht zu dieser index.html (andere Version). index.html, data1 und data2 immer zusammen hochladen.";decrypt.buf=null;return}
+    if(e&&e.message==="nofile"){$("#err").textContent="Datendateien (data1.bin, data2.bin …) fehlen neben index.html.";return}
+    if(!(e&&e.name==="OperationError")){$("#err").textContent="Laden fehlgeschlagen (Netz?). Gespeichertes Passwort bleibt erhalten – bitte nochmal „Öffnen“ tippen.";if(auto)$("#pw").value=pw;decrypt.buf=null;return}
+    $("#err").textContent="Falsches Passwort.";pwDel();return}
+  const _saved=remember?pwSet(pw):true;
+  $("#lock").remove();init();try{LASTC=JSON.stringify(S.combat)}catch(e){}
+  if(!_saved)setTimeout(()=>{try{toast("⚠️ Passwort konnte hier nicht gespeichert werden (privater Modus?)")}catch(e){}},600);
+}
+$("#unlock").onclick=()=>tryUnlock($("#pw").value,$("#rem").checked);
+$("#pw").onkeydown=e=>{if(e.key==="Enter")$("#unlock").click()};
+(()=>{const p=pwGet();if(p)tryUnlock(p,true,true)})();
+
+function defState(){return{tab:"karte",chapter:D.chapters[0].id,map:D.chapters[0].maps[0].id,zoom:1,done:{},cur:null,
+  secrets:Object.assign({},D.secretsInit),npc:{},loot:"",notes:"",log:[],combat:{list:[],turn:0,round:1}}}
+function load(){try{const raw=lsGet(SKEY);S=JSON.parse(raw?raw.replace(/\bLenifi\b/g,"Lemiphi").replace(/\bPelias\b/g,"Pellias").replace(/\bBrock\b/g,"Brokk").replace(/\bLilia\b/g,"Lillia"):raw)}catch(e){}if(!S)S=defState();S=Object.assign(defState(),S)}
+function save(){try{trackCombat()}catch(e){}lsSet(SKEY,JSON.stringify(S))}
+function ask(text,ok="OK",danger=false){return new Promise(res=>{const d=document.createElement("div");d.className="dlgbg";
+  d.innerHTML=`<div class="dlg"><p style="white-space:pre-wrap;margin:0 0 14px">${esc(text)}</p><div class="row" style="justify-content:flex-end;gap:8px"><button id="dno">Abbrechen</button><button class="${danger?"danger":"pri"}" id="dok">${esc(ok)}</button></div></div>`;
+  document.body.appendChild(d);const done=v=>{d.remove();res(v)};d.querySelector("#dno").onclick=()=>done(false);d.querySelector("#dok").onclick=()=>done(true);d.onclick=e=>{if(e.target===d)done(false)}})}
+function askText(label,val="",multi=false){return new Promise(res=>{const d=document.createElement("div");d.className="dlgbg";
+  d.innerHTML=`<div class="dlg"><p style="margin:0 0 8px">${esc(label)}</p>${multi?`<textarea id="dtx" rows="6" style="width:100%">${esc(val)}</textarea>`:`<input id="dtx" style="width:100%" value="${esc(val)}">`}<div class="row" style="justify-content:flex-end;gap:8px;margin-top:12px"><button id="dno">Abbrechen</button><button class="pri" id="dok">OK</button></div></div>`;
+  document.body.appendChild(d);const t=d.querySelector("#dtx");setTimeout(()=>t.focus(),50);const done=v=>{d.remove();res(v)};
+  d.querySelector("#dno").onclick=()=>done(null);d.querySelector("#dok").onclick=()=>done(t.value);if(!multi)t.onkeydown=e=>{if(e.key==="Enter")done(t.value)}})}
+/* ---------- Undo (Kampf) ---------- */
+const UNDO=[];let LASTC=null,NOUNDO=false;
+function trackCombat(){if(!S)return;const cur=JSON.stringify(S.combat);if(LASTC!==null&&cur!==LASTC&&!NOUNDO){UNDO.push(LASTC);if(UNDO.length>60)UNDO.shift()}LASTC=cur}
+function undoCombat(){if(!UNDO.length)return;NOUNDO=true;S.combat=JSON.parse(UNDO.pop());LASTC=JSON.stringify(S.combat);save();NOUNDO=false;rKampf();toast("Rückgängig gemacht")}
+
+function toast(t){document.querySelectorAll(".toast").forEach(x=>x.remove());const d=document.createElement("div");d.className="toast";d.textContent=t;document.body.appendChild(d);setTimeout(()=>d.remove(),1700)}
+
+const MOD=s=>/^!! /m.test(s||"")?' <span class="modb">🛠️</span>':"";
+function md(src){
+  const lines=String(src||"").split("\n");let h="",inUl=false,inTbl=false,tbl=[];
+  const il=s=>esc(s).replace(/Mordenkainen\*/g,"Mordenkainen&#42;").replace(/\*\*\*(.+?)\*\*\*/g,"<b><i>$1</i></b>").replace(/\*\*(.+?)\*\*/g,"<b>$1</b>").replace(/\*(.+?)\*/g,"<i>$1</i>");
+  const flushT=()=>{if(!inTbl)return;h+="<table>"+tbl.filter(r=>!/^\|?\s*-/.test(r)).map((r,i)=>"<tr>"+r.replace(/^\||\|$/g,"").split("|").map(c=>`<${i?"td":"th"}>${il(c.trim())}</${i?"td":"th"}>`).join("")+"</tr>").join("")+"</table>";inTbl=false;tbl=[]};
+  for(const ln of lines){
+    const t=ln.trim();
+    if(t.startsWith("|")){if(inUl){h+="</ul>";inUl=false}inTbl=true;tbl.push(t);continue}else flushT();
+    if(/^[-•] /.test(t)){if(!inUl){h+="<ul>";inUl=true}h+="<li>"+il(t.slice(2))+"</li>";continue}
+    if(inUl){h+="</ul>";inUl=false}
+    if(!t){continue}
+    if(t.startsWith("!! ")){const body="<p>"+il(t.slice(3))+"</p>";if(h.endsWith("</div><!--mod-->"))h=h.slice(0,-"</div><!--mod-->".length)+body+"</div><!--mod-->";else h+='<div class="mod"><div class="modh">🛠️ EIGENE ANPASSUNG · nicht im Buch</div>'+body+"</div><!--mod-->";continue}
+    if(t.startsWith("### "))h+="<h3>"+il(t.slice(4))+"</h3>";
+    else if(t.startsWith("> "))h+="<blockquote>"+il(t.slice(2))+"</blockquote>";
+    else h+="<p>"+il(t)+"</p>";
+  }
+  flushT();if(inUl)h+="</ul>";return h;
+}
+const chap=()=>D.chapters.find(c=>c.id===S.chapter)||D.chapters[0];
+const curMap=()=>chap().maps.find(m=>m.id===S.map)||chap().maps[0];
+const DK=id=>S.chapter==="k2"?id:S.chapter+":"+id;
+function findArea(id){const cs=[chap(),...D.chapters.filter(c=>c!==chap())];for(const c of cs)for(const m of c.maps)for(const a of m.areas)if(a.id===id)return{a,m,c};return null}
+
+const TABS=[["karte","🗺️","Karte"],["kapitel","📖","Kapitel"],["kampf","⚔️","Kampf"],["notiz","📝","Notizen"],["ki","🤖","Claude"]];
+function init(){
+  load();
+  $("#nav").innerHTML=TABS.map(([k,i,l])=>`<button data-t="${k}"><span class="i">${i}</span>${l}</button>`).join("");
+  $("#nav").onclick=e=>{const b=e.target.closest("button");if(!b)return;S.kScroll=S.kScroll||{};S.kScroll[S.tab+"|"+S.chapter]=$("#main").scrollTop;S.tab=b.dataset.t;save();render();const y=(S.kScroll||{})[S.tab+"|"+S.chapter]||0;$("#main").scrollTop=y;requestAnimationFrame(()=>{$("#main").scrollTop=y})};
+  $("#ctx").onclick=copyContext;
+  $("#ttl").onclick=()=>{sheet(`<h2>Inhaltsverzeichnis</h2>${D.chapters.map(c=>`<button class="${c.id===S.chapter?"pri":""}" data-ch="${c.id}" style="display:block;width:100%;margin:6px 0;text-align:left">${esc(c.title)}</button>`).join("")}`);
+    document.querySelectorAll("#ov [data-ch]").forEach(b=>b.onclick=()=>{S.chapter=b.dataset.ch;S.map=chap().maps[0].id;save();closeOv();render()})};
+  render();
+  if(EMB){if(S.tab==="karte")S.tab="kapitel",render();const q=EQ.splice(0);q.forEach(eNach);parent.postMessage({typ:"slbereit"},"*")}
+}
+function render(){
+  if(S.tab==="monster")S.tab="kampf";if(S.tab==="geheim")S.tab="notiz";
+  document.querySelectorAll("#nav button").forEach(b=>b.classList.toggle("on",b.dataset.t===S.tab));
+  $("#ttl").textContent="Inhaltsverzeichnis ▾";
+  ({ki:rKI,karte:rKarte,kapitel:rKapitel,monster:rMonster,kampf:rKampf,geheim:rGeheim,notiz:rNotiz})[S.tab]();
+}
+
+/* ---------- Karte ---------- */
+function rKarte(){
+  const c=chap(),m=curMap();
+  $("#main").innerHTML=`
+  <div class="mapsel">${c.maps.map(x=>`<button class="sm ${x.id===m.id?"on":""}" data-m="${x.id}">${esc(x.title)}${x.page?` (S. ${x.page})`:""}</button>`).join("")}</div>
+  <div class="row" style="margin-bottom:8px"><button class="sm" id="zo">−</button><span class="mut" id="zl">${Math.round(S.zoom*100)}%</span><button class="sm" id="zi">+</button><span class="mut" style="font-size:13px">Tippe auf eine Nummer.</span></div>
+  <div class="mapwrap" id="mw"><div class="mapin" id="mi" style="width:${S.zoom*100}%"><img src="${D.images[m.img]}" alt="">
+  ${m.areas.map(a=>`<div class="mk ${S.done[DK(a.id)]?"done":""} ${S.cur===a.id?"cur":""} ${MOD(a.info)?"hasmod":""}" style="left:${a.x}%;top:${a.y}%" data-a="${a.id}">${a.id}</div>`).join("")}
+  </div></div>
+  <div class="mleg"><span><i style="background:rgb(232,190,100)"></i>offen</span><span><i style="background:var(--red)"></i>zuletzt geöffnet</span><span><i style="background:#6e6e6e"></i>erledigt</span><span><i style="background:transparent;box-shadow:0 0 0 2px #c2185b"></i>eigene Anpassung</span></div>
+  <div class="card list" style="margin-top:12px">${m.areas.map(a=>`<div class="it" data-a="${a.id}"><span><b>${a.id}</b> ${esc(a.name)}${a.read?" 🗣️":""}${MOD(a.info)}${PG(a.page)}</span><span>${S.done[DK(a.id)]?"✅":"›"}</span></div>`).join("")}</div>`;
+  $("#main").querySelectorAll("[data-m]").forEach(b=>b.onclick=()=>{S.map=b.dataset.m;save();rKarte()});
+  $("#main").querySelectorAll("[data-a]").forEach(b=>b.onclick=()=>openArea(b.dataset.a));
+  const z=d=>{S.zoom=Math.min(4,Math.max(1,+(S.zoom+d).toFixed(2)));save();$("#mi").style.width=S.zoom*100+"%";$("#zl").textContent=Math.round(S.zoom*100)+"%"};
+  $("#zi").onclick=()=>z(.5);$("#zo").onclick=()=>z(-.5);
+}
+function closeOv(){$("#ov").innerHTML="";AREA_STACK.length=0}
+let AREA_STACK=[],AREA_RET=null;
+function chapIds(){const c=chap();const L=[];c.maps.forEach(m=>m.areas.forEach(a=>{if(/^[A-Z]{1,2}\d+$/.test(a.id))L.push(a.id)}));return L}
+function linkIds(html,self){const ids=chapIds().filter(i=>i!==self);if(!ids.length)return html;
+  const re=new RegExp("\\b("+ids.sort((a,b)=>b.length-a.length).join("|")+")\\b","g");
+  return html.split(/(<[^>]+>)/).map(p=>p.startsWith("<")?p:p.replace(re,'<span class="lnk" data-go="$1">$1</span>')).join("")}
+function bindGo(root,from){root.querySelectorAll("[data-go]").forEach(e=>e.onclick=ev=>{ev.stopPropagation();goArea(e.dataset.go,from)})}
+function goArea(id,from){const f=findArea(id);if(!f)return;if(from)AREA_STACK.push(from);if(S.tab==="karte"&&f.m&&chap().maps.includes(f.m))S.map=f.m.id;openArea(id,true)}
+function pullClose(el,onClose){if(!el)return;let y0=null,dy=0;
+  el.addEventListener("touchstart",e=>{if(e.touches.length!==1||el.scrollTop>2){y0=null;return}y0=e.touches[0].clientY;dy=0;el.style.transition="none"},{passive:true});
+  el.addEventListener("touchmove",e=>{if(y0===null)return;dy=e.touches[0].clientY-y0;if(dy<=0||el.scrollTop>2){if(dy<0)y0=null;el.style.transform="";return}e.preventDefault();el.style.transform=`translateY(${dy*0.9}px)`},{passive:false});
+  el.addEventListener("touchend",()=>{if(y0===null)return;y0=null;el.style.transition="transform .18s ease-out";
+    if(dy>110){el.style.transform="translateY(100%)";setTimeout(onClose,170)}else el.style.transform="";dy=0})}
+let SHEET_CLOSE=null;function sheet(html){SHEET_CLOSE=null;$("#ov").innerHTML=`<div class="shade" id="sh"></div><div class="sheet"><div class="grab"></div>${html}</div>`;$("#sh").onclick=closeOv;pullClose($("#ov .sheet"),()=>(SHEET_CLOSE||closeOv)())}
+function showPic(k){const d=document.createElement("div");d.className="pic";d.innerHTML=`<img src="${D.art[k]}">`;d.onclick=()=>d.remove();document.body.appendChild(d)}
+function picBtns(list){return list&&list.length?`<div class="row" style="margin:6px 0">${list.map(([l,k])=>`<button class="sm pb" data-pic="${k}">🖼️ ${esc(l)}</button>`).join("")}</div>`:""}
+function bindPics(){document.querySelectorAll("#ov [data-pic]").forEach(e=>e.onclick=()=>showPic(e.dataset.pic))}
+const ICON={m:"Gegner",n:"NSC / Verbündete",f:"Falle / Gefahr",s:"Schatz",t:"Tür / Durchgang",i:"Hinweis"};
+function zoomHTML(a,m){
+  const g=a.geo;if(!g)return"";const[x0,y0,x1,y1]=g.box,bw=x1-x0,bh=y1-y0,asp=D.aspect[m.img];
+  const ratio=(bw)/(bh*asp);
+  const z=S.azoom||1;
+  return`<div class="row" style="margin:8px 0 0"><button class="sm" id="azo">−</button><span class="mut" id="azl">${Math.round(z*100)}%</span><button class="sm" id="azi">+</button><span class="mut" style="font-size:13px">Im Fenster scrollen.</span></div><div class="zwrap" id="zw"><div class="zoomv" id="zv" style="aspect-ratio:${ratio};width:${z*100}%"><img src="${D.images[m.img]}" style="width:${10000/bw}%;left:${-x0*100/bw}%;top:${-y0*100/bh}%">
+   ${g.feat.map((f,i)=>`<div class="fm ${f.t}" data-f="${i}" style="left:${(f.x-x0)/bw*100}%;top:${(f.y-y0)/bh*100}%">${i+1}</div>`).join("")}
+   ${(a.pass||[]).filter(p=>p.x!=null).map(p=>`<div class="pm" data-go="${p.to}" style="left:${(p.x-x0)/bw*100}%;top:${(p.y-y0)/bh*100}%">→ ${p.to}</div>`).join("")}</div></div>`;
+}
+function openArea(id,nav){
+  const f=findArea(id);if(!f)return;const a=f.a;S.cur=id;if(!nav)AREA_STACK.length=0;save();const back=AREA_STACK[AREA_STACK.length-1];
+  const counts={};a.creatures.forEach(c=>counts[c]=(counts[c]||0)+1);
+  const g=a.geo||{feat:[]};
+  $("#ov").innerHTML=`<div class="full"><div class="grab" style="margin-top:0"></div>
+  ${back?`<button class="sm pri" id="abk" style="margin-bottom:6px">‹ zurück zu ${esc(back)}</button>`:""}
+  <div class="row" style="justify-content:space-between"><h2 style="margin:0;font-size:20px">${a.id}: ${esc(a.name)}</h2><button id="cl">✕</button></div>
+  <p class="mut" style="margin:2px 0 0;font-size:13px">${esc(f.m.title)}${a.page?` · Buch S. ${a.page}`:""}</p>
+  ${MOD(a.info)?`<div class="md">${md(a.info.split("\n").filter(l=>l.startsWith("!! ")).join("\n"))}</div>`:""}
+  ${zoomHTML(a,f.m)}
+  ${g.feat.length?`<div class="mleg" style="margin-bottom:6px">${[["m","#e0524a"],["n","#5fc27e"],["f","#f0a23a"],["s","#f3d34a"],["t","#5fc3e0"],["i","#ddd"]].map(([k,c])=>`<span><i style="background:${c}"></i>${ICON[k]}</span>`).join("")}<span><i style="background:#5fc3e0;width:18px"></i>→ Übergang (antippen)</span></div>`:""}
+  ${g.feat.length?`<div class="leg">${g.feat.map((x,i)=>{const tg=[...new Set(((x.l+" "+(x.n||"")).match(/\b[A-Z]{1,2}\d+\b/g)||[]))].filter(t=>t!==a.id&&chapIds().includes(t));return`<div class="fm ${x.t}">${i+1}</div><div data-l2="${i}"><b>${esc(x.l)}</b> <span class="mut" style="font-size:12px">${ICON[x.t]}</span>${tg.map(t=>`<span class="ftlnk" data-go="${t}">→ ${t}</span>`).join("")}${x.n?`<div style="font-size:14px">${linkIds(esc(x.n),a.id)}</div>`:""}</div>`}).join("")}</div>`:""}
+  ${(a.pass||[]).length?`<div style="margin:6px 0 2px"><span class="mut" style="font-size:13px">Übergänge: </span>${a.pass.map(p=>{const t=findArea(p.to);return`<span class="pchip" data-go="${p.to}">→ ${p.to}${t?` <span style="font-weight:500">${esc(t.a.name)}</span>`:""}</span>`}).join("")}</div>`:""}
+  ${g.move?`<div class="move">🚶 <b>Bewegung:</b> ${esc(g.move)}</div>`:""}
+  <div class="row" style="margin:10px 0 4px">
+   <button class="sm ${S.done[DK(id)]?"pri":""}" id="dn">${S.done[DK(id)]?"✅ erledigt":"als erledigt markieren"}</button>
+   <button class="sm" id="cx">📋 Kontext</button>
+   <button class="sm pri" id="kib">🤖 Claude fragen</button>
+   ${a.creatures.length?`<button class="sm" id="fi">⚔️ alle in Kampf</button>`:""}
+  </div>
+  ${a.creatures.length?`<div style="margin:6px 0">${Object.entries(counts).map(([c,n])=>{const cr=D.creatures[c];return`<span class="chip ${cr&&cr.md?"":"miss"}" data-c="${c}">🐉 ${n>1?n+"× ":""}${esc(cr?cr.name:c)}</span>`}).join("")}</div>`:""}
+  ${(()=>{const L=[...(a.pics||[])];Object.keys(counts).forEach(c=>{const cr=D.creatures[c];if(cr&&cr.pics)cr.pics.forEach(p=>{if(!L.some(x=>x[1]===p[1]))L.push(p)})});return L.length?`<p class="mut" style="margin:8px 0 0;font-size:13px">Bilder für die Spieler (Tippen = Vollbild, nochmal tippen = schließen):</p>`+picBtns(L):""})()}
+  ${a.read?`<div class="read">${esc(a.read)}</div>`:""}
+  <div class="md">${linkIds(md(a.info.split("\n").filter(l=>!l.startsWith("!! ")).join("\n")),a.id)}</div>
+  ${a.loot.length?`<h3 style="color:var(--acc)">Schätze</h3><div>${a.loot.map(l=>`<span class="chip" data-l="${esc(l)}">💰 ${esc(l)}</span>`).join("")}</div><p class="mut" style="font-size:13px">Tippen = in die Beuteliste übernehmen.</p>`:""}
+  </div>`;
+  $("#ov .full").scrollTop=0;
+  const _close=()=>{closeOv();if(S.tab==="karte")rKarte()};
+  $("#cl").onclick=_close;pullClose($("#ov .full"),_close);bindGo($("#ov .full"),id);
+  if($("#zi")||$("#azi")){const az=d=>{S.azoom=Math.min(4,Math.max(.5,+((S.azoom||1)+d).toFixed(2)));save();$("#zv").style.width=S.azoom*100+"%";$("#azl").textContent=Math.round(S.azoom*100)+"%"};if($("#azi")){$("#azi").onclick=()=>az(.5);$("#azo").onclick=()=>az(-.5)}}
+  if(AREA_RET&&AREA_RET.id===id){const r=AREA_RET;AREA_RET=null;requestAnimationFrame(()=>{$("#ov .full").scrollTop=r.top;if($("#zw")){$("#zw").scrollTop=r.zt;$("#zw").scrollLeft=r.zl}})}
+  if($("#abk"))$("#abk").onclick=()=>{const b=AREA_STACK.pop();openArea(b,true)};
+  $("#dn").onclick=()=>{S.done[DK(id)]=!S.done[DK(id)];if(S.done[DK(id)])addLog(`${id} ${a.name} erledigt`);save();openArea(id)};
+  $("#cx").onclick=copyContext;
+  $("#kib").onclick=()=>{closeOv();S.tab="ki";save();render();$("#main").scrollTop=0};
+  if($("#fi"))$("#fi").onclick=()=>{a.creatures.forEach(c=>addCombatant(c));save();toast("Zum Kampf hinzugefügt");};
+  document.querySelectorAll("#ov [data-c]").forEach(e=>e.onclick=()=>{AREA_RET={id,top:$("#ov .full").scrollTop,zt:$("#zw")?$("#zw").scrollTop:0,zl:$("#zw")?$("#zw").scrollLeft:0};openCreature(e.dataset.c,"@"+id)});
+  document.querySelectorAll("#ov [data-l]").forEach(e=>e.onclick=()=>{S.loot=(S.loot?S.loot+"\n":"")+e.dataset.l+` (${id})`;save();toast("In Beuteliste")});
+  bindPics();
+  document.querySelectorAll("#ov .fm[data-f]").forEach(e=>e.onclick=()=>{document.querySelectorAll("#ov [data-l2]").forEach(x=>x.classList.toggle("on",x.dataset.l2===e.dataset.f));const t=document.querySelector(`#ov [data-l2="${e.dataset.f}"]`);if(t)t.scrollIntoView({behavior:"smooth",block:"center"})});
+}
+
+/* ---------- Kapitel ---------- */
+const RD=s=>(/^> /m.test(s||"")?" 🗣️":"")+MOD(s);
+const PG=p=>p?` <span class="pg">S. ${p}</span>`:"";
+
+let CRX=null;
+function crRegex(){if(CRX)return CRX;CRX=[];const norm=t=>t.toLowerCase().replace(/[„“"(),.·:]/g," ").replace(/\s+/g," ").trim();
+  for(const [id,c] of Object.entries(D.creatures)){const nm=norm(c.name.replace(/\s*\(.*\)\s*$/,"").replace(/\s*„.*$/,""));if(nm.length<4)continue;
+    const parts=nm.split(" ").map(w=>{let x=w;if(x.length>5)x=x.replace(/(er|en|e|n|s)$/,"");return x.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")+(w.length>3?"[a-zäöüß]{0,3}":"")});
+    CRX.push([id,new RegExp("(^|[^a-zäöüß])"+parts.join("\\s+")+"($|[^a-zäöüß])")])}
+  return CRX}
+function crMentions(text,extra){const norm=t=>t.toLowerCase().replace(/[„“"(),.·:]/g," ").replace(/\s+/g," ");
+  const spans=[];String(text||"").replace(/(^|[^*])\*\*([^*]+?)\*\*(?!\*)/g,(m,a,b)=>{spans.push(" "+norm(b)+" ")});
+  const ids=new Set(extra||[]);const big=spans.join(" | ");
+  for(const [id,re] of crRegex())if(re.test(big))ids.add(id);
+  return [...ids]}
+function crChips(ids){return ids.length?`<div class="row" style="gap:6px;margin:6px 0">${ids.map(k=>`<button class="sm" data-cr="${k}">🐉 ${esc((D.creatures[k]||{}).name||k)}</button>`).join("")}</div>`:""}
+function rKapitel(){
+  const c=chap();
+  const areaSub=id=>{const f=findArea(id);const a=f.a;return`<details class="sub" data-k="a:${a.id}"><summary>${a.id}: ${esc(a.name)}${a.read?" 🗣️":""}${MOD(a.info)}${PG(a.page)}</summary><div class="row" style="gap:6px;margin:6px 0"><button class="sm" data-a="${a.id}">🗺️ Raum groß öffnen</button></div>${crChips(crMentions(a.info,[...new Set(a.creatures)]))}${picBtns(a.pics)}${a.read?`<div class="read">${esc(a.read)}</div>`:""}<div class="md">${md(a.info)}</div></details>`};
+  const secSub=t=>{const s=c.sections.find(x=>x.title===t);return s?`<details class="sub" data-k="s:${esc(s.title)}"><summary>${esc(s.title)}${RD(s.md)}${PG(s.page)}</summary>${crChips(crMentions(s.md))}${picBtns(s.pics)}<div class="md">${md(s.md)}</div></details>`:""};
+  $("#main").innerHTML=`<input class="search" id="q" placeholder="Im Kapitel suchen …"><p class="mut" style="font-size:13px;margin:0 0 8px">🗣️ = enthält Text zum Vorlesen. Reihenfolge = Spielablauf.</p><div id="res"></div>`+
+   c.groups.map((g,i)=>`<details class="card grp" data-k="g:${i}"><summary>${esc(g.title)}${g.items.some(it=>it.startsWith("@")?(findArea(it.slice(1))||{a:{}}).a.read:RD((c.sections.find(x=>x.title===it)||{}).md))?" 🗣️":""}${g.items.some(it=>it.startsWith("@")?MOD((findArea(it.slice(1))||{a:{}}).a.info):MOD((c.sections.find(x=>x.title===it)||{}).md))?' <span class="modb">🛠️</span>':""}</summary>${g.items.map(it=>it.startsWith("@")?areaSub(it.slice(1)):it.startsWith("#")?`<h3 style="color:var(--mut);font-size:14px;margin:12px 0 2px">${esc(it.slice(1))}</h3>`:secSub(it)).join("")}</details>`).join("");
+  $("#main").querySelectorAll("[data-a]").forEach(b=>b.onclick=()=>openArea(b.dataset.a));
+  $("#main").querySelectorAll("[data-cr]").forEach(b=>b.onclick=()=>openCreature(b.dataset.cr,"kapitel"));
+  $("#main").querySelectorAll("[data-pic]").forEach(b=>b.onclick=()=>showPic(b.dataset.pic));
+  S.kOpen=S.kOpen||{};const ko=S.kOpen[c.id]||(S.kOpen[c.id]={"g:0":1});
+  $("#main").querySelectorAll("details[data-k]").forEach(d=>{if(ko[d.dataset.k])d.open=true;d.addEventListener("toggle",()=>{if(d.open)ko[d.dataset.k]=1;else delete ko[d.dataset.k];save()})});
+  $("#q").oninput=e=>{
+    const q=e.target.value.trim().toLowerCase();if(q.length<2){$("#res").innerHTML="";return}
+    const hits=[];
+    c.sections.forEach(s=>{if((s.title+s.md).toLowerCase().includes(q))hits.push(`<div class="it" data-s="${esc(s.title)}">📖 ${esc(s.title)}</div>`)});
+    c.maps.forEach(m=>m.areas.forEach(a=>{if((a.id+" "+a.name+a.read+a.info).toLowerCase().includes(q))hits.push(`<div class="it" data-a="${a.id}">🗺️ ${a.id} ${esc(a.name)}</div>`)}));
+    $("#res").innerHTML=`<div class="card list">${hits.join("")||'<span class="mut">Nichts gefunden.</span>'}</div>`;
+    $("#res").querySelectorAll("[data-a]").forEach(b=>b.onclick=()=>openArea(b.dataset.a));
+    $("#res").querySelectorAll("[data-s]").forEach(b=>b.onclick=()=>{const d=[...document.querySelectorAll("details.sub")].find(x=>x.querySelector("summary").textContent===b.dataset.s);if(d){d.open=true;d.closest(".grp").open=true;d.scrollIntoView({behavior:"smooth"})}});
+  };
+}
+/* ---------- Monster ---------- */
+let MQ="";
+function rMonster(){
+  const host=$("#kmon")||$("#main");
+  const ids=Object.keys(D.creatures).sort((a,b)=>D.creatures[a].name.localeCompare(D.creatures[b].name,"de"));
+  host.innerHTML=`<input class="search" id="q" placeholder="Monster suchen …" value="${esc(MQ)}"><div class="card list" id="ml"></div>`;
+  const draw=q=>{$("#ml").innerHTML=ids.filter(i=>D.creatures[i].name.toLowerCase().includes(q)).map(i=>{const c=D.creatures[i];return`<div class="it" data-c="${i}"><span>${esc(c.name)} <span class="mut" style="font-size:13px">${esc(c.src)}</span></span><span>${c.pics?"🖼️ ":""}${c.md?"›":"⚠️ fehlt"}</span></div>`}).join("");
+    $("#ml").querySelectorAll("[data-c]").forEach(b=>b.onclick=()=>openCreature(b.dataset.c))};
+  draw(MQ.toLowerCase());$("#q").oninput=e=>{MQ=e.target.value;draw(MQ.toLowerCase())};
+}
+function statNums(md){const hp=(md||"").match(/Trefferpunkte\*\*\s*(\d+)/),ac=(md||"").match(/Rüstungsklasse\*\*\s*(\d+)/);return{hp:hp?+hp[1]:null,ac:ac?+ac[1]:null}}
+
+function sb(c){
+  const src=String(c.md||"");const L=src.split("\n");
+  const il=t=>esc(t).replace(/\*\*\*(.+?)\*\*\*/g,"<b><i>$1</i></b>").replace(/\*\*(.+?)\*\*/g,"<b>$1</b>").replace(/\*(.+?)\*/g,"<i>$1</i>");
+  let type="",notes=[],top=[],rest=[],tbl=[],body=[],seenTbl=false,i=0;
+  const TOP=/^(Herausforderungsgrad|Rüstungsklasse|Trefferpunkte|Bewegungsrate)$/;
+  for(;i<L.length;i++){const t=L[i].trim();
+    if(t.startsWith("### ")||/^\*\*\*/.test(t))break;
+    if(!t)continue;
+    if(t.startsWith("⚠️")||t.startsWith("> ")){notes.push(t.replace(/^> /,""));continue}
+    if(!type&&/^\*[^*].*\*$/.test(t)){type=t.slice(1,-1);continue}
+    if(t.startsWith("|")){tbl.push(t);seenTbl=true;continue}
+    const m=t.match(/^\*\*(.+?)\*\*\s*(.*)$/);
+    if(m){(TOP.test(m[1])?top:rest).push([m[1],m[2]]);continue}
+    (seenTbl?rest:top).push(["",t]);
+  }
+  top.sort((a,b)=>(a[0]==="Herausforderungsgrad"?-1:0)-(b[0]==="Herausforderungsgrad"?-1:0));
+  const kv=a=>a.map(([k,v])=>`<div class="kv">${k?`<b>${esc(k)}:</b> `:""}${il(v)}</div>`).join("");
+  let ab="";const rows=tbl.filter(r=>!/^\|?\s*-/.test(r)).map(r=>r.replace(/^\||\|$/g,"").split("|").map(x=>x.trim()));
+  if(rows.length>=2){ab=`<div class="ab">`+rows[0].map((h,j)=>{const v=rows[1][j]||"";const mm=v.match(/^(\d+)\s*\(([^)]+)\)/);return `<div><div class="l">${esc(h)}</div><div class="m">${esc(mm?mm[2]:v)}</div><div class="s">${esc(mm?mm[1]:"")}</div></div>`}).join("")+`</div>`}
+  // body
+  let h="",sec=null,ul=false;const open=t=>{h+=`<hr><h3>${esc(t)}</h3>`};
+  for(;i<L.length;i++){let t=L[i].trim();if(!t){continue}
+    if(t.startsWith("### ")){if(ul){h+="</ul>";ul=false}open(t.slice(4));sec=1;continue}
+    if(!sec){open("Eigenschaften");sec=1}
+    if(/^[-•] /.test(t)){if(!ul){h+="<ul>";ul=true}h+="<li>"+il(t.slice(2))+"</li>";continue}
+    if(ul){h+="</ul>";ul=false}
+    const m=t.match(/^\*\*\*(.+?)\*\*\*\s*(.*)$/);
+    if(m){const txt=il(m[2]).replace(/\s*<i>Treffer:<\/i>/g,"<br><i>Treffer:</i>");h+=`<div class="tr"><span class="n">${esc(m[1].replace(/\.$/,""))}</span>${txt}</div>`}
+    else h+=`<div class="tr">${il(t)}</div>`;
+  }
+  if(ul)h+="</ul>";
+  return `<div class="sb">${notes.map(n=>`<div class="note">${il(n)}</div>`).join("")}<h2 class="sbn">${esc(c.name.replace(/ \(.*\)$/,""))}</h2>${type?`<div class="ban">${il(type)}</div>`:""}${kv(top)}${ab?`<hr>${ab}`:""}${rest.length?`<hr>${kv(rest)}`:""}${h}</div>`;
+}
+function openCreature(id,back){
+  const c=D.creatures[id];if(!c)return;
+  const toArea=back&&back[0]==="@"?back.slice(1):null;
+  const bl=toArea?"":back==="kampf"?"‹ Zurück zum Kampf":back==="kapitel"?"‹ Zurück zum Kapitel":back?`‹ ${back}`:"";
+  sheet(`<div class="row" style="justify-content:space-between"><span class="mut" style="font-size:14px">📖 ${esc(c.src)}</span><span class="row">${bl?`<button class="sm pri" id="bk">${bl}</button>`:""}<button class="sm" id="cl">✕</button></span></div>
+   ${back==="kampf"?"":`<div class="row" style="margin-bottom:6px"><button class="sm" id="fi">⚔️ in Kampf</button></div>`}${picBtns(c.pics)}
+   ${c.md?sb(c):`<div class="md"><p style="color:var(--red)">${D.missing}</p></div>`}
+   ${back==="kampf"?`<button class="pri" id="bk2" style="width:100%;margin-top:12px">‹ Zurück zum Kampf</button>`:""}`);
+  if(toArea){const ret=()=>openArea(toArea,true);$("#cl").onclick=ret;$("#sh").onclick=ret;SHEET_CLOSE=ret}else $("#cl").onclick=closeOv;
+  if(bl)$("#bk").onclick=()=>(back==="kampf"||back==="kapitel")?closeOv():openArea(back);
+  if($("#bk2"))$("#bk2").onclick=closeOv;
+  if($("#fi"))$("#fi").onclick=()=>{addCombatant(id);save();toast("Zum Kampf hinzugefügt")};bindPics();
+}
+
+/* ---------- Kampf ---------- */
+function addCombatant(cid,name){
+  const c=cid?D.creatures[cid]:null;const n=statNums(c&&c.md);
+  const base=name||(c?c.name.replace(/ \(.*\)$/,""):"?");
+  const same=S.combat.list.filter(x=>x.base===base).length;
+  S.combat.list.push({id:Math.random().toString(36).slice(2),base,name:base+(cid&&same?" "+(same+1):""),cid:cid||null,ini:"",hp:n.hp,max:n.hp,ac:n.ac,note:"",pc:!cid});
+}
+function longPress(el,fn,ms=650){let t=null,moved=false;
+  const start=e=>{moved=false;el.classList.add("pressing");t=setTimeout(()=>{t=null;el.classList.remove("pressing");if(navigator.vibrate)navigator.vibrate(30);fn()},ms)};
+  const stop=()=>{if(t){clearTimeout(t);t=null}el.classList.remove("pressing")};
+  el.addEventListener("pointerdown",start);["pointerup","pointerleave","pointercancel"].forEach(ev=>el.addEventListener(ev,stop));
+  el.addEventListener("contextmenu",e=>e.preventDefault());
+  return ()=>t===null&&false;
+}
+function numpad(x,onDone){
+  let v="";
+  const draw=()=>{
+    sheet(`<div class="row" style="justify-content:space-between"><h2>${esc(x.name)}</h2><button class="sm" id="cl">✕</button></div>
+    <div style="text-align:center;margin:6px 0 2px" class="mut">Aktuell</div>
+    <div style="text-align:center;font-size:30px;font-weight:800">${x.hp===null?"?":x.hp} <span class="mut" style="font-size:18px">/ ${x.max===null?"?":x.max} TP</span>${x.thp?` <span style="color:var(--blu);font-size:22px">+${x.thp} temp.</span>`:""}</div>
+    <div id="disp" style="text-align:center;font-size:40px;font-weight:800;color:var(--acc);min-height:52px;margin:6px 0;border:1px solid var(--line);border-radius:12px;padding:4px">${v||"&nbsp;"}</div>
+    <div class="pad">${[1,2,3,4,5,6,7,8,9].map(n=>`<button data-k="${n}">${n}</button>`).join("")}<button data-k="C">C</button><button data-k="0">0</button><button data-k="B">⌫</button></div>
+    <div class="row" style="margin-top:10px;gap:8px">
+     <button class="act dmg" data-a="dmg">− Schaden</button><button class="act heal" data-a="heal">+ Heilen</button>
+    </div>
+    <div class="row" style="margin-top:8px;gap:8px"><button class="act tmp" data-a="tmp">🛡️ Temporäre TP</button>${x.thp?`<button class="act" data-a="tmp0">Temp. TP weg</button>`:""}</div>
+    <div class="row" style="margin-top:8px;gap:8px"><button class="act" data-a="set">= TP setzen</button><button class="act" data-a="max">Max-TP setzen</button></div>
+    <p class="mut" style="font-size:12px;margin:8px 0 0">Schaden zieht zuerst temporäre TP ab. Temporäre TP addieren sich nicht – ein neuer Wert ersetzt den alten.</p>`);
+    $("#cl").onclick=closeOv;
+    document.querySelectorAll("#ov [data-k]").forEach(b=>b.onclick=()=>{const k=b.dataset.k;if(k==="C")v="";else if(k==="B")v=v.slice(0,-1);else if(v.length<4)v+=k;$("#disp").innerHTML=v||"&nbsp;"});
+    document.querySelectorAll("#ov [data-a]").forEach(b=>b.onclick=()=>{const a=b.dataset.a;if(a==="tmp0"){x.thp=0;closeOv();onDone();return}
+      const n=parseInt(v,10);if(isNaN(n))return;
+      if(a==="tmp"){x.thp=n}
+      else if(a==="dmg"){if(x.hp===null)return;let r=n;if(x.thp){const u=Math.min(x.thp,r);x.thp-=u;r-=u}x.hp-=r}
+      else if(a==="heal"){if(x.hp===null)return;x.hp=x.max!==null?Math.min(x.max,x.hp+n):x.hp+n}
+      else if(a==="set"){x.hp=n;if(x.max===null)x.max=n}
+      else if(a==="max"){x.max=n;if(x.hp===null||x.hp>n)x.hp=n}
+      closeOv();onDone()});
+  };draw();
+}
+function rKampf(){
+  const C=S.combat,L=C.list;
+  $("#main").innerHTML=`
+  <div class="card row" style="justify-content:space-between"><b>Runde ${C.round}</b>
+   <span class="row"><button class="sm" id="undo" ${UNDO.length?"":"disabled"}>↩ Zurück${UNDO.length?` (${UNDO.length})`:""}</button><button class="sm" id="sort">Sortieren</button><button class="pri sm" id="next">Nächster ▶</button></span></div>
+  <div id="clist">${L.map((x,i)=>`<div class="swrap"><button class="swdel" data-del="${i}">Löschen</button><div class="cmb ${i===C.turn?"turn":""} ${x.hp!==null&&x.hp<=0?"dead":""}" data-row="${i}">
+    <input class="ini" inputmode="numeric" pattern="[0-9]*" value="${esc(x.ini)}" data-ini="${i}" placeholder="Ini">
+    <div class="who" data-who="${i}"><b>${esc(x.name)}</b>${x.cid?` <span class="mut" style="font-size:13px">📖 Werte</span>`:""}<div class="mut" style="font-size:13px">${x.ac?`RK ${x.ac}`:(x.pc?"Spielercharakter":"")}</div></div>
+    <button class="hpb" data-hp="${i}">${x.hp===null?"TP ?":`${x.hp}<small>/${x.max}</small>`}${x.thp?`<div class="thp">+${x.thp} temp.</div>`:""}</button>
+  </div></div>`).join("")||'<p class="mut">Noch niemand im Kampf.</p>'}</div>
+  <div class="card"><div class="row">
+   <button class="sm" id="party">+ ganze Gruppe</button>${D.party.map(p=>`<button class="sm" data-pc="${esc(p)}"${L.some(x=>x.name===p)?' disabled style="opacity:.4"':""}>+ ${esc(p)}</button>`).join("")}<button class="sm" id="cust">+ Eigener Eintrag</button>
+   <button class="sm" id="res">Kampf beenden</button></div>
+   <p class="mut" style="font-size:13px;margin-bottom:0">Name antippen = Werteblock. TP antippen = Ziffernblock für Schaden/Heilung. <b>Eintrag nach links wischen → „Löschen“.</b> „↩ Zurück“ macht die letzten Änderungen rückgängig.</p></div>
+  <h3 style="margin:18px 2px 6px">🐉 Monster</h3><div id="kmon"></div>`;
+  const q=s=>$("#main").querySelectorAll(s);
+  q("[data-ini]").forEach(e=>e.onchange=()=>{L[+e.dataset.ini].ini=e.value;save()});
+  q("[data-who]").forEach(e=>{const x=L[+e.dataset.who];e.addEventListener("click",()=>{if(e.closest(".cmb").dataset.swiped)return;if(x.cid)openCreature(x.cid,"kampf")})});
+  const closeAll=()=>q(".cmb").forEach(r=>{r.style.transform="";r.classList.remove("open");delete r.dataset.swiped});
+  q(".cmb").forEach(r=>{let sx=0,sy=0,dx=0,drag=false,lock=null;
+    r.addEventListener("touchstart",e=>{const t=e.touches[0];sx=t.clientX;sy=t.clientY;dx=0;drag=true;lock=null;r.style.transition="none"},{passive:true});
+    r.addEventListener("touchmove",e=>{if(!drag)return;const t=e.touches[0];const mx=t.clientX-sx,my=t.clientY-sy;
+      if(lock===null&&(Math.abs(mx)>8||Math.abs(my)>8))lock=Math.abs(mx)>Math.abs(my)?"x":"y";
+      if(lock!=="x")return;e.preventDefault();const base=r.classList.contains("open")?-110:0;dx=Math.min(0,Math.max(-140,base+mx));r.style.transform=`translateX(${dx}px)`},{passive:false});
+    r.addEventListener("touchend",()=>{if(!drag)return;drag=false;r.style.transition="";if(lock!=="x")return;
+      if(dx<-55){closeAll();r.classList.add("open");r.style.transform="translateX(-110px)";r.dataset.swiped=1;setTimeout(()=>{},0)}else{r.classList.remove("open");r.style.transform="";setTimeout(()=>delete r.dataset.swiped,50)}});
+  });
+  q("[data-del]").forEach(b=>b.onclick=()=>{const i=+b.dataset.del,x=L[i];L.splice(i,1);if(C.turn>=L.length)C.turn=0;if(C.turn>i)C.turn--;save();rKampf();toast(`${x.name} entfernt – „↩ Zurück“ stellt wieder her`)});
+  $("#undo").onclick=undoCombat;
+  q("[data-hp]").forEach(e=>e.onclick=()=>{const x=L[+e.dataset.hp];numpad(x,()=>{if(x.hp!==null&&x.hp<=0&&!x.pc)addLog(`${x.name} besiegt (Runde ${C.round})`);save();rKampf()})});
+  $("#sort").onclick=()=>{L.sort((a,b)=>(+b.ini||0)-(+a.ini||0));C.turn=0;save();rKampf()};
+  $("#next").onclick=()=>{if(!L.length)return;C.turn++;if(C.turn>=L.length){C.turn=0;C.round++}save();rKampf()};
+  document.querySelectorAll("#main [data-pc]").forEach(b=>b.onclick=()=>{const p=b.dataset.pc;if(!L.some(x=>x.name===p)){addCombatant(null,p);save();rKampf()}});
+  $("#party").onclick=()=>{D.party.forEach(p=>{if(!L.some(x=>x.name===p))addCombatant(null,p)});save();rKampf()};
+  $("#cust").onclick=async()=>{const n=await askText("Name des Eintrags?");if(!n)return;addCombatant(null,n);L[L.length-1].pc=false;save();rKampf()};
+  $("#res").onclick=async()=>{if(await ask("Kampf beenden und Liste leeren? (Mit „↩ Zurück“ wiederherstellbar)","Kampf beenden",true)){S.combat={list:[],turn:0,round:1};save();rKampf()}};
+  rMonster();
+}
+
+/* ---------- Geheimnisse ---------- */
+function rGeheim(){
+  const host=$("#geh")||host;
+  const st=S.secrets;const cnt=k=>Object.values(st).filter(v=>v===k).length;
+  const tab=S.secTab||"bewahrt";
+  const row=(n,t,k,btns)=>`<div class="sec"><b>${n}</b><div>${esc(t)} <span class="tag">${k}</span><div class="row" style="margin-top:6px;gap:6px">${btns}</div></div></div>`;
+  const B=(n,v,l,cls="")=>`<button class="sm ${cls}" data-set="${n}" data-v="${v}">${l}</button>`;
+  let body="";
+  if(tab==="bewahrt"){
+    const L=D.secrets.filter(([n])=>st[n]==="erfahren");
+    body=L.length?L.map(([n,t,k])=>row(n,t,k,B(n,"offenbart","🌬️ Offenbart","pri")+B(n,"verraten","🗣️ An NSC verraten")+B(n,"","↩ doch nicht"))).join(""):'<p class="mut">Noch keine bewahrten Geheimnisse.</p>';
+  }else if(tab==="offen"){
+    const kaps=[...new Set(D.secrets.map(s=>s[2]))];
+    const curK="Kap. "+(chap().id||"").replace(/\D/g,"");
+    body=kaps.map(k=>{const L=D.secrets.filter(s=>s[2]===k&&!st[s[0]]);if(!L.length)return"";
+      return`<details ${k===curK?"open":""} class="sub"><summary>${k} <span class="mut">(${L.length})</span></summary>${L.map(([n,t,kk])=>row(n,t,kk,B(n,"erfahren","✅ Erfahren","pri")+B(n,"weg","✗ nicht mehr erreichbar"))).join("")}</details>`}).join("")||'<p class="mut">Keine offenen Geheimnisse mehr.</p>';
+  }else{
+    const L=D.secrets.filter(([n])=>["offenbart","verraten","weg"].includes(st[n]));
+    const lab={offenbart:"offenbart",verraten:"an NSC verraten",weg:"nicht mehr erreichbar"};
+    body=L.length?L.map(([n,t,k])=>row(n,t,k+" · "+lab[st[n]],B(n,st[n]==="weg"?"":"erfahren","↩ zurücksetzen"))).join(""):'<p class="mut">Noch nichts verbraucht.</p>';
+  }
+  host.innerHTML=`<div class="card"><div class="row" style="justify-content:space-between"><b style="font-size:20px">🤫 Bewahrt: ${cnt("erfahren")}</b><span class="mut" style="font-size:13px">offenbart ${cnt("offenbart")} · verraten ${cnt("verraten")}</span></div>
+  <details style="margin-top:4px"><summary class="mut" style="font-size:13px;font-weight:400">Regeln kurz</summary><p class="mut" style="font-size:13px;margin:4px 0 0">Offenbaren: Aktion, in den Wind flüstern → jeder SC 1 Minute Vorteil auf W20-Würfe, alle vergessen es (außer Nr. 17). Einem NSC erzählt → Energie weg, bleibt im Gedächtnis. Bewahrte zählen in Kap. 11 gegen Vecna.</p></details></div>
+  <div class="mapsel">${[["bewahrt",`Bewahrt (${cnt("erfahren")})`],["offen","Noch offen"],["verbraucht","Verbraucht"]].map(([k,l])=>`<button class="sm ${tab===k?"on":""}" data-tab="${k}">${l}</button>`).join("")}</div>
+  <div class="card">${body}</div>`;
+  host.querySelectorAll("[data-tab]").forEach(b=>b.onclick=()=>{S.secTab=b.dataset.tab;save();rGeheim()});
+  host.querySelectorAll("[data-set]").forEach(b=>b.onclick=()=>{const n=b.dataset.set,v=b.dataset.v;if(v)S.secrets[n]=v;else delete S.secrets[n];addLog(`Geheimnis ${n}: ${v||"offen"}`);save();rGeheim()});
+}
+
+/* ---------- Notizen ---------- */
+const NSTAT=["?","lebt","verbündet","befreit","geflohen","gefangen","tot"];
+function addLog(t){const d=new Date();S.log.unshift(`${d.toLocaleDateString("de-DE")} ${d.toLocaleTimeString("de-DE",{hour:"2-digit",minute:"2-digit"})} – ${t}`);if(S.log.length>300)S.log.length=300}
+function rNotiz(){
+  const c=chap();
+  $("#main").innerHTML=`
+  <div class="card"><b>Ereignis festhalten</b><div class="row" style="margin-top:6px"><input id="ev" style="flex:1" placeholder="z. B. Gertrude befreit, Torkner geflohen"><button class="pri sm" id="add">+</button></div>
+   <div style="margin-top:8px;max-height:220px;overflow:auto;font-size:14px">${S.log.map((l,i)=>`<div class="mut row" style="padding:3px 0;border-bottom:1px solid var(--line);justify-content:space-between;flex-wrap:nowrap"><span>${esc(l)}</span><button class="sm" data-dl="${i}" style="padding:2px 9px;flex:none">✕</button></div>`).join("")}</div></div>
+  <div class="card"><b>NSC-Status</b>${c.npcs.map(n=>`<div class="it row" style="justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--line)"><span>${esc(n)}</span><select data-n="${esc(n)}">${NSTAT.map(s=>`<option ${(S.npc[n]||"?")===s?"selected":""}>${s}</option>`).join("")}</select></div>`).join("")}</div>
+  <div class="card"><b>Beute</b><textarea id="loot" rows="5" style="width:100%;margin-top:6px">${esc(S.loot)}</textarea></div>
+  <div class="card"><b>Freie Notizen</b><textarea id="notes" rows="8" style="width:100%;margin-top:6px">${esc(S.notes)}</textarea></div>
+  <div class="card"><b>Sicherung</b><div class="row" style="margin-top:6px"><button class="sm" id="exp">Stand exportieren</button><button class="sm" id="imp">Stand importieren</button><button class="sm" id="lo">Abmelden</button></div>
+   <p class="mut" style="font-size:13px">Der Spielstand liegt nur auf diesem Gerät. Exportieren kopiert ihn in die Zwischenablage.</p></div>
+  <h3 style="margin:18px 2px 6px">🤫 Geheimnisse</h3><div id="geh"></div>`;
+  $("#add").onclick=()=>{const v=$("#ev").value.trim();if(!v)return;addLog(v);save();rNotiz()};
+  $("#ev").onkeydown=e=>{if(e.key==="Enter")$("#add").click()};
+  $("#main").querySelectorAll("[data-dl]").forEach(b=>b.onclick=()=>{const i=+b.dataset.dl;ask("Eintrag löschen?\n"+S.log[i],"Löschen",true).then(ok=>{if(ok){S.log.splice(i,1);save();rNotiz()}})});
+  $("#main").querySelectorAll("[data-n]").forEach(e=>e.onchange=()=>{S.npc[e.dataset.n]=e.value;addLog(`${e.dataset.n}: ${e.value}`);save()});
+  $("#loot").oninput=e=>{S.loot=e.target.value;save()};
+  $("#notes").oninput=e=>{S.notes=e.target.value;save()};
+  $("#exp").onclick=()=>clip(JSON.stringify(S),"Spielstand kopiert");
+  $("#imp").onclick=async()=>{const v=await askText("Exportierten Spielstand einfügen:","",true);if(!v)return;try{S=Object.assign(defState(),JSON.parse(v));save();toast("Importiert");render()}catch(e){toast("Ungültiger Spielstand")}};
+  $("#lo").onclick=()=>{pwDel();location.reload()};
+  rGeheim();
+}
+
+/* ---------- Claude ---------- */
+const PROJ="https://claude.ai/project/01a1ab6e-3dc8-747a-a451-4823acd49bc8";
+let SAMPLE=null,KI_BUSY=null;
+function initSample(){if(EMB){SAMPLE=SAMPLE||kiProxy;return}try{if(window.claude&&window.claude.use&&!initSample.p){initSample.p=window.claude.use("sample").then(x=>{SAMPLE=x;if(S.tab==="ki")rKI()}).catch(()=>{})}}catch(e){}}
+initSample();setTimeout(initSample,1500);setTimeout(initSample,5000);
+function bookContext(){
+  const c=chap();const f=S.cur?findArea(S.cur):null;
+  let t=`### Kapiteltext (${c.title}) – Abschrift aus dem Buch des SL; Zeilen mit "!!" sind eigene Anpassungen des SL\n`;
+  c.sections.forEach(x=>t+=`\n## ${x.title}${x.page?` (S. ${x.page})`:""}\n${x.md}\n`);
+  c.maps.forEach(m=>m.areas.forEach(a=>{t+=`\n## ${a.id}: ${a.name}${a.page?` (S. ${a.page})`:""}\n${a.read?"Vorlesetext: "+a.read+"\n":""}${a.info}\n${a.creatures.length?"Kreaturen: "+a.creatures.map(k=>(D.creatures[k]||{}).name||k).join(", ")+"\n":""}`}));
+  const cr=new Set();c.maps.forEach(m=>m.areas.forEach(a=>a.creatures.forEach(k=>cr.add(k))));
+  if(f)f.a.creatures.forEach(k=>cr.add(k));
+  t+=`\n### Werteblöcke (Kapitel)\n`;cr.forEach(k=>{const x=D.creatures[k];if(x&&x.md)t+=`\n## ${x.name} (${x.src})\n${x.md}\n`});
+  t+=`\n### Gruppe\n${(D.party||[]).map(p=>typeof p==="string"?p:(p.name||JSON.stringify(p))).join(", ")}\n`;
+  return t;
+}
+const KI_SYS=`Du bist der Assistent eines Spielleiters (D&D 5e, Abenteuer „Vecna: Vorabend der Verdammnis“, deutsche Ausgabe). Antworte auf Deutsch, knapp und spieltischtauglich: konkrete Vorschläge, SG/Würfe, Zitate für NSC in wörtlicher Rede. Halte dich an den mitgelieferten Kapiteltext; markiere Eigenes als Vorschlag. Keine Einleitung, keine Floskeln. Kennzeichne Unsicheres mit [Vermutung]. Formatierung: kurze Absätze, **fett** für Schlüsselbegriffe, Listen mit "- ".`;
+function rKI(){
+  initSample();
+  if(!SAMPLE)return rKIlink();
+  S.kiChat=S.kiChat||[];
+  const f=S.cur?findArea(S.cur):null;
+  $("#main").innerHTML=`<div class="card"><div class="row" style="justify-content:space-between"><b>🤖 Claude fragen</b><button class="sm" id="knw">Neues Gespräch</button></div>
+   <p class="mut" style="font-size:13px;margin:4px 0 8px">Kontext: <b>${esc(chap().title)}</b>${f?` · Ort <b>${f.a.id} ${esc(f.a.name)}</b>`:""} · Gruppe, Kampf, Geheimnisse, Notizen und Kapiteltext werden automatisch mitgeschickt.</p>
+   <div id="kchat">${S.kiChat.map(m=>m.role==="user"?`<div class="kq">${esc(m.show||m.content)}</div>`:`<div class="ka md">${md(m.content)}</div>`).join("")}</div>
+   <div id="kout"></div>
+   <textarea id="kq" rows="4" style="width:100%;margin-top:8px" placeholder="Was machen die Spieler? Was willst du wissen?">${esc(S.kiDraft||"")}</textarea>
+   <div class="row" style="margin-top:6px;gap:6px">${["Wie reagiert der NSC?","Was passiert jetzt?","Welcher Wurf / welcher SG?","Improvisiere eine Szene"].map(s=>`<button class="sm" data-qs="${s}">${s}</button>`).join("")}</div>
+   <div class="row" style="margin-top:10px;gap:8px"><button class="pri" id="kgo" style="flex:1;padding:14px">Fragen</button><button id="kstop" style="display:none">Stopp</button></div>
+  </div>`;
+  $("#kq").oninput=()=>{S.kiDraft=$("#kq").value;save()};
+  $("#main").querySelectorAll("[data-qs]").forEach(b=>b.onclick=()=>{$("#kq").value=($("#kq").value?$("#kq").value+" ":"")+b.dataset.qs;S.kiDraft=$("#kq").value;save()});
+  $("#knw").onclick=()=>{S.kiChat=[];save();rKI()};
+  $("#kstop").onclick=()=>{if(KI_BUSY)KI_BUSY.abort()};
+  $("#kgo").onclick=async()=>{
+    const q=$("#kq").value.trim();if(!q||KI_BUSY)return;
+    const first=!S.kiChat.length;
+    const content=first?`${KI_SYS}\n\n${bookContext()}\n\n### Aktueller Spielstand\n${buildContext(q).replace(/\n\nBitte hilf mir[\s\S]*$/,"")}\n\n### Frage des SL\n${q}`:`Aktueller Spielstand:\n${buildContext("").replace(/\n\nDie Spieler machen gerade:[\s\S]*$/,"")}\n\nFrage des SL: ${q}`;
+    S.kiChat.push({role:"user",content,show:q});S.kiDraft="";save();
+    $("#kchat").insertAdjacentHTML("beforeend",`<div class="kq">${esc(q)}</div>`);$("#kq").value="";
+    const out=$("#kout");out.className="ka md";out.innerHTML='<span class="mut">Claude denkt nach …</span>';
+    KI_BUSY=new AbortController();$("#kstop").style.display="";$("#kgo").disabled=true;
+    try{
+      const r=await SAMPLE(S.kiChat.map(m=>({role:m.role,content:m.content})),{cache:false,signal:KI_BUSY.signal,onText:({text})=>{out.innerHTML=md(text)}});
+      S.kiChat.push({role:"assistant",content:r.text||""});save();
+    }catch(e){
+      const part=e&&e.text;if(part)S.kiChat.push({role:"assistant",content:part+"\n\n*(abgebrochen)*"});else S.kiChat.pop();save();
+      if(e&&e.code==="not_granted"){SAMPLE=null;toast("Claude-Zugriff nicht erlaubt");}
+      else if(e&&e.code==="rate_limited")toast("Zu viele Anfragen – kurz warten");
+      else if(!(e&&e.name==="AbortError"))toast("Fehler: "+((e&&e.message)||e));
+    }
+    KI_BUSY=null;rKI();setTimeout(()=>{const k=$("#kchat");if(k&&k.lastElementChild)k.lastElementChild.scrollIntoView({block:"start"})},50);
+  };
+}
+function rKIlink(){
+  $("#main").innerHTML=`<div class="card"><b>Claude fragen</b>
+   <p class="mut" style="font-size:13px;margin:4px 0 8px">Schreib kurz, was die Spieler machen. Raum, Gruppenstand, Kampf und Notizen hängt die App automatisch an.</p>
+   <textarea id="kq" rows="5" style="width:100%" placeholder="z. B. Brokk will den Nalfeshnee bestechen, ihnen die Zellenschlüssel zu geben">${esc(S.kiDraft||"")}</textarea>
+   <div class="row" style="margin-top:8px;gap:6px">${["Wie reagiert der NSC?","Was passiert jetzt?","Welcher Wurf / welcher SG?","Improvisiere eine Szene"].map(s=>`<button class="sm" data-qs="${s}">${s}</button>`).join("")}</div>
+   <button class="pri" id="kgo" style="width:100%;margin-top:12px;padding:14px">🤖 Im DnD-Projekt fragen</button>
+   <p class="mut" style="font-size:12px;margin:6px 0 0">Kopiert die Frage samt Kontext und öffnet dein DnD-Projekt in der Claude-App. Dort ins Eingabefeld tippen → <b>Einsetzen</b> → senden. Im Projekt liegen die Kapitel-Abschriften, ich kenne also den Hintergrund.</p>
+   <button class="sm" id="knew" style="width:100%;margin-top:10px">Neuer Chat, Text schon eingefügt (ohne Projektwissen)</button>
+  </div>
+  <div class="card"><b>Vorschau</b><pre id="kpv" style="white-space:pre-wrap;font-size:12px;color:var(--mut);margin:6px 0 0;max-height:240px;overflow:auto"></pre></div>`;
+  const upd=()=>{S.kiDraft=$("#kq").value;save();$("#kpv").textContent=buildContext($("#kq").value)};
+  $("#kq").oninput=upd;upd();
+  $("#main").querySelectorAll("[data-qs]").forEach(b=>b.onclick=()=>{$("#kq").value=($("#kq").value?$("#kq").value+" ":"")+b.dataset.qs;upd()});
+  $("#kgo").onclick=()=>{const txt=buildContext($("#kq").value);clip(txt,"Kopiert – im Projekt einfügen");setTimeout(()=>{location.href=PROJ},400)};
+  $("#knew").onclick=()=>{const txt=buildContext($("#kq").value).slice(0,6000);clip(txt,"Kopiert");setTimeout(()=>{location.href="https://claude.ai/new?q="+encodeURIComponent(txt)},400)};
+}
+
+/* ---------- Kontext für Claude ---------- */
+function clip(t,msg){
+  const ok=()=>toast(msg||"Kopiert");
+  if(navigator.clipboard&&window.isSecureContext)navigator.clipboard.writeText(t).then(ok,()=>fallback(t,ok));else fallback(t,ok);
+}
+function fallback(t,ok){const a=document.createElement("textarea");a.value=t;document.body.appendChild(a);a.select();try{document.execCommand("copy");ok()}catch(e){askText("Kopieren (markieren & kopieren):",t,true)}a.remove()}
+function copyContext(){clip(buildContext(""),"Kontext kopiert – in Claude einfügen")}
+function buildContext(q){
+  const c=chap();const f=S.cur?findArea(S.cur):null;
+  const strip=s=>String(s||"").replace(/\*\*\*|\*\*|\*/g,"");
+  let t=`[Vecna – Vorabend der Verdammnis | ${c.title}]\n`;
+  if(f)t+=`Aktueller Ort: ${f.a.id} ${f.a.name} (${f.m.title})\n${strip(f.a.info)}\n`;
+  const done=Object.keys(S.done).filter(k=>S.done[k]).map(k=>k.replace(/^k\d+:/,''));if(done.length)t+=`\nErledigte Bereiche: ${done.join(", ")}\n`;
+  const npc=Object.entries(S.npc).filter(([,v])=>v!=="?");if(npc.length)t+=`NSC-Status: ${npc.map(([k,v])=>k+": "+v).join("; ")}\n`;
+  const sec=Object.entries(S.secrets).map(([k,v])=>`${k}=${v}`);if(sec.length)t+=`Geheimnisse: ${sec.join(", ")}\n`;
+  if(S.combat.list.length)t+=`Kampf Runde ${S.combat.round}: ${S.combat.list.map(x=>`${x.name}${x.hp!==null?" "+x.hp+"/"+x.max+" TP":""}${x.thp?" +"+x.thp+" temp.":""}`).join("; ")}\n`;
+  if(S.log.length)t+=`Letzte Ereignisse:\n- ${S.log.slice(0,8).join("\n- ")}\n`;
+  if(S.notes.trim())t+=`Notizen: ${S.notes.trim().slice(0,600)}\n`;
+  t+=`\nDie Spieler machen gerade: ${q||""}\n\nBitte hilf mir als SL: kurz, konkret, mit SG/Würfen wo nötig, passend zum Buch (Projektdokumente).`;
+  return t;
+}
+</script>
+</body>
+</html>
